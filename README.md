@@ -10,11 +10,27 @@ Loja virtual desenvolvida como projeto integrador do curso de TADS, com foco em 
 - Rotas protegidas (Área do Cliente).
 
 ## Como rodar
-1. Clone o repositório: `git clone [URL_DO_SEU_REPOSITORIO]`
-2. Entre na pasta: `cd nome-da-pasta`
+1. Clone o repositório: `git clone https://github.com/gccavalcante/tads-store/ `
+2. Entre na pasta: `cd tads-store`
 3. Instale as dependências: `npm install`
 4. Inicie o projeto: `npm run dev`
 
 ## Usuário de teste
 - **Login:** admin
 - **Senha:** 123456
+
+## 📸 Galeria do Projeto
+Abaixo, confira algumas das principais telas da **NexusTech Store**:
+
+| Vitrine de Produtos | Detalhes do Produto |
+| :---: | :---: |
+| ![Vitrine](caminho/para/image1.png) | ![Vitrine2](caminho/para/image2.png) |
+| *Catálogo com Filtros* | *Visão detalhada* |
+
+| Carrinho de Compras | Área de Acesso (Login) |
+| :---: | :---: |
+| ![Carrinho](caminho/para/image3.png) | ![Login](caminho/para/image4.png) |
+| *Gestão de itens* | *Área restrita* |
+
+---
+*Nota: Para que as imagens apareçam corretamente, certifique-se de salvar os prints na pasta do seu projeto (ex: dentro de uma pasta `assets` ou na raiz) e atualizar o caminho no link acima.*
