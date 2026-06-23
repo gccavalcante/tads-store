@@ -23,16 +23,22 @@ Loja virtual desenvolvida como projeto integrador do curso de TADS, com foco em 
 Abaixo, confira algumas das principais telas da **NexusTech Store**:
 
 | Vitrine de Produtos |
-| :---: | :---: |
-| ![Vitrine](prints/image1.png) |
-| ![Vitrine2](prints/image2.png) |
-| *Catálogo com Filtros* | *Visão detalhada* |
+| :---: |
+| ![Vitrine](prints/catalogo.png) |
+| ![Vitrine2](prints/catalogo-light-mode.png) |
+ 
+ | Detalhes do Produto |
+| :---: |
+| ![Carrinho](prints/detalhe.png) |
 
-| Carrinho de Compras | Área de Acesso (Login) |
-| :---: | :---: |
-| ![Carrinho](prints/para/image3.png) | 
-| ![Login](prints/image4.png) |
-| *Gestão de itens* | *Área restrita* |
+| Carrinho de Compras |
+| :---: |
+| ![Carrinho](prints/carrinho.png) |
 
----
-*Nota: Para que as imagens apareçam corretamente, certifique-se de salvar os prints na pasta do seu projeto (ex: dentro de uma pasta `assets` ou na raiz) e atualizar o caminho no link acima.*
+| Área de Acesso (Login) |
+| :---: |
+| ![Login](prints/area-protegida.png) |
+
+| *Área restrita* |
+| :---: |
+| ![Área restrita2](prints/area-protegida2.png) |
