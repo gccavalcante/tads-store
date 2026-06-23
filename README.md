@@ -24,12 +24,12 @@ Abaixo, confira algumas das principais telas da **NexusTech Store**:
 
 | Vitrine de Produtos | Detalhes do Produto |
 | :---: | :---: |
-| ![Vitrine](caminho/para/image1.png) | ![Vitrine2](caminho/para/image2.png) |
+| ![Vitrine](prints/image1.png) | ![Vitrine2](prints/image2.png) |
 | *Catálogo com Filtros* | *Visão detalhada* |
 
 | Carrinho de Compras | Área de Acesso (Login) |
 | :---: | :---: |
-| ![Carrinho](caminho/para/image3.png) | ![Login](caminho/para/image4.png) |
+| ![Carrinho](prints/para/image3.png) | ![Login](prints/image4.png) |
 | *Gestão de itens* | *Área restrita* |
 
 ---
