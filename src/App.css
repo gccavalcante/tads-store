@@ -1,0 +1,585 @@
+/* =========================================
+   VARIÁVEIS GLOBAIS E CONTRASTE (NEXUSTECH)
+   ========================================= */
+:root {
+  --bg-dark: #050505;        /* Preto profundo (Fundo Principal) */
+  --bg-card: #111111;        /* Cinza escuro (Fundo dos cards) */
+  --border-color: #222222;   /* Bordas discretas */
+  --text-main: #ffffff;      /* Texto puro branco */
+  --text-muted: #888888;     
+  
+  --accent: #05d55a;         /* Verde Circuito/Matrix */
+  --accent-glow: rgba(5, 213, 90, 0.4); 
+  --accent-hover: #04b34b;
+  
+  --success: #10b981;        
+  --danger: #ef4444;         
+  
+  --radius-lg: 16px;
+  --radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   TEMA CLARO (LIGHT MODE OVERRIDES)
+   ========================================= */
+body.light-mode {
+  --bg-dark: #f4f6f8;        /* Cinza bem claro*/
+  --bg-card: #ffffff;        
+  --border-color: #e2e8f0;
+  --text-main: #0a0a0a;      /* Texto quase preto (Garante leitura) */
+  --text-muted: #64748b;     
+  --accent: #00a843;         /* Verde um pouco mais escuro para contraste no claro */
+  --accent-glow: rgba(0, 168, 67, 0.2);
+}
+
+body.light-mode .produto-card, 
+body.light-mode .detalhe-produto,
+body.light-mode input,
+body.light-mode select,
+body.light-mode .filtros-sidebar {
+  border-color: var(--border-color);
+  background-color: var(--bg-card);
+}
+
+body.light-mode .filtro-cabecalho {
+  border-bottom-color: var(--border-color);
+}
+
+/* =========================================
+   RESET, BASE E BLINDAGEM DE TEXTOS
+   ========================================= */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* BLINDAGEM: Força os cabeçalhos do index.css a respeitarem as nossas cores */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-main) !important;
+}
+
+.preco {
+  color: var(--accent) !important;
+}
+
+.layout-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.conteudo-principal {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* O restante do seu CSS (Cabeçalho, Grid, Cards) continua daqui em diante... */
+
+/* =========================================
+   CABEÇALHO E EFEITO SCROLL
+   ========================================= */
+.cabecalho-loja {
+  background-color: var(--bg-dark);
+  width: 100%; /* Força a ocupar a tela inteira horizontalmente */
+  box-sizing: border-box; /* Garante que o padding não estoure a tela */
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  border-bottom: 1px solid transparent;
+  transition: padding 0.4s ease, background-color 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
+}
+
+/* A mágica do Scroll: Header fica compacto, de vidro e com borda neon */
+.cabecalho-loja.scrolled {
+  padding: 12px 40px;
+  background-color: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--accent);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+
+.logo-link {
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.cabecalho-loja h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: var(--transition);
+}
+
+.cabecalho-loja h1:hover {
+  color: var(--accent);
+  text-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* =========================================
+   BARRA DE PESQUISA DO HEADER
+   ========================================= */
+.search-bar-header {
+  flex: 1;
+  max-width: 600px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  /* 50px de padding na direita empurra o texto para não sobrepor o ícone */
+  padding: 12px 50px 12px 20px; 
+  border-radius: 30px;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  font-size: 1rem;
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 15px var(--accent-glow);
+  background-color: var(--bg-dark);
+}
+
+.search-bar-header .search-btn {
+  position: absolute;
+  right: 15px; 
+  background: transparent !important; /* Força a tirar o azul global */
+  width: auto !important; /* Impede que ele estique 100% cobrindo o input */
+  border: none;
+  color: var(--text-muted) !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  transition: var(--transition);
+  box-shadow: none !important; /* Remove o neon estourado */
+}
+
+.search-bar-header .search-btn:hover {
+  transform: scale(1.1);
+  color: var(--accent) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* =========================================
+   NAVEGAÇÃO E ÍCONES DO HEADER
+   ========================================= */
+.nav-icones {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.btn-icone {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.btn-icone:hover {
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.btn-icone.sair:hover {
+  color: var(--danger);
+}
+
+.carrinho-icone {
+  position: relative;
+}
+
+.badge-carrinho {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background-color: var(--danger);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-dark);
+  transition: var(--transition);
+}
+
+body.light-mode .badge-carrinho {
+  border-color: #ffffff;
+}
+
+.usuario-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-left: 1px solid var(--border-color);
+  padding-left: 15px;
+}
+
+/* =========================================
+   LAYOUT DO CATÁLOGO (SIDEBAR + GRID)
+   ========================================= */
+.catalogo-container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+/* SIDEBAR DE FILTROS */
+.filtros-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background-color: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  position: sticky; /* Fica presa na tela ao rolar */
+  top: 100px;
+}
+
+.filtro-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--accent);
+}
+
+.filtro-grupo {
+  margin-bottom: 25px;
+}
+
+.filtro-grupo label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.input-com-icone {
+  position: relative;
+}
+
+.icone-busca {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.input-com-icone input {
+  width: 100%;
+  padding-left: 38px; /* Espaço para o ícone */
+  box-sizing: border-box;
+}
+
+.categorias-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-categoria {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-categoria:hover {
+  background-color: rgba(255,255,255,0.05);
+}
+
+.btn-categoria.ativo {
+  background-color: var(--accent-glow);
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ÁREA PRINCIPAL DA VITRINE */
+.vitrine-principal {
+  flex: 1;
+}
+
+.vitrine-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.vitrine-cabecalho h2 { margin: 0; }
+.vitrine-cabecalho span { color: var(--text-muted); font-size: 0.9rem; }
+
+.lista-produtos {
+  display: grid;
+  /* Cria colunas de no mínimo 280px. Joga pra baixo automaticamente. */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* =========================================
+   NOVO VISUAL DO CARD DE PRODUTO
+   ========================================= */
+.produto-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  gap: 15px;
+}
+
+/* Efeito ao passar o mouse (Hover) */
+.produto-card:hover {
+  transform: translateY(-8px); /* Levanta o card */
+  border-color: var(--accent); /* Borda acende */
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px var(--accent-glow);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.badge-desconto {
+  background-color: var(--danger);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.imagem-container {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.produto-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  transition: var(--transition);
+}
+
+.produto-card:hover img {
+  transform: scale(1.05); /* Dá um zoom leve na imagem */
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.produto-marca {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.produto-card h3 {
+  font-size: 1.15rem;
+  margin: 5px 0 10px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Corta o texto em 2 linhas com reticências */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.produto-avaliacao {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: auto; /* Empurra o preço para baixo */
+}
+
+.preco-container {
+  margin-top: 15px;
+}
+
+.preco-riscado {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.produto-card .preco {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--success);
+}
+
+/* =========================================
+   BOTÕES E INPUTS GERAIS
+   ========================================= */
+button, .btn {
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+button[type="submit"], .btn-comprar {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button[type="submit"]:hover, .btn-comprar:hover {
+  background-color: var(--accent-hover);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+input, select {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.btn-detalhes {
+  display: block;
+  text-align: center;
+  background-color: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+  margin-top: 15px;
+}
+
+.btn-detalhes:hover {
+  background-color: var(--accent);
+  color: white;
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* =========================================
+   PÁGINA DE DETALHES
+   ========================================= */
+.detalhe-produto {
+  background-color: var(--bg-card);
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* =========================================
+   MEDIA QUERIES (AJUSTES PARA CELULAR E TABLET)
+   ========================================= */
+@media (max-width: 900px) {
+  .catalogo-container {
+    flex-direction: column;
+  }
+  .filtros-sidebar {
+    width: 100%;
+    position: static;
+    box-sizing: border-box;
+  }
+  .categorias-lista {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .cabecalho-loja {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 20px;
+  }
+  .search-bar-header {
+    width: 100%;
+    max-width: 100%;
+  }
+  input[type="text"], select {
+    width: 100% !important; 
+  }
+}
