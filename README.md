@@ -1,5 +1,9 @@
 # TADS Store - Projeto Integrador
 
+## Deploy
+
+:sparkles: **Veja o projeto em funcionamento:** [Acessar Demonstração (Vercel)](https://tads-store-eight.vercel.app/)
+
 ## Descrição
 Loja virtual desenvolvida como projeto integrador do curso de TADS, com foco em React, integração com API, navegação (SPA) e autenticação.
 
