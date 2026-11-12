@@ -6,13 +6,13 @@ function Login() {
   const [usuario, setUsuario] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
-  
+
   const { entrar } = useAuth();
   const navegar = useNavigate();
 
   function aoEnviar(e) {
     e.preventDefault(); // Impede a página de recarregar [cite: 2308]
-    
+
     // Login SIMULADO conforme a apostila: "aluno" e "1234" [cite: 2309, 2310]
     if (usuario === "aluno" && senha === "1234") {
       entrar();
@@ -23,24 +23,33 @@ function Login() {
   }
 
   return (
-    <div style={{ textAlign: "center", padding: "40px" }}>
-      <h2>Acesso à Conta</h2>
-      <form onSubmit={aoEnviar} style={{ display: "flex", flexDirection: "column", maxWidth: "300px", margin: "0 auto", gap: "15px" }}>
-        <input 
-          value={usuario}
-          onChange={(e) => setUsuario(e.target.value)}
-          placeholder="Usuário (dica: aluno)" 
-          style={{ padding: "10px" }}
-        />
-        <input 
-          type="password" 
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          placeholder="Senha (dica: 1234)" 
-          style={{ padding: "10px" }}
-        />
-        {erro && <p style={{ color: "red", margin: 0 }}>{erro}</p>}
-        <button type="submit" style={{ padding: "10px", backgroundColor: "#0b6e83", color: "white", border: "none", cursor: "pointer" }}>
+    <div className="pagina-estreita">
+      <h1>Entrar</h1>
+      <p className="apoio">Acesso de demonstração: usuário <strong>aluno</strong>, senha <strong>1234</strong>.</p>
+
+      <form onSubmit={aoEnviar} className="form-auth" noValidate>
+        <div className="campo">
+          <label htmlFor="usuario">Usuário</label>
+          <input
+            id="usuario"
+            autoComplete="username"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+          />
+        </div>
+        <div className="campo">
+          <label htmlFor="senha">Senha</label>
+          <input
+            id="senha"
+            type="password"
+            autoComplete="current-password"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            aria-describedby={erro ? "erro-login" : undefined}
+          />
+        </div>
+        {erro && <p id="erro-login" className="campo-erro" role="alert">{erro}</p>}
+        <button type="submit" className="btn btn-primario btn-largo">
           Entrar
         </button>
       </form>

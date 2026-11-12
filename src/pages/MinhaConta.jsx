@@ -1,8 +1,11 @@
+import { Link } from "react-router-dom";
+
 function MinhaConta() {
   return (
-    <div style={{ padding: "40px", textAlign: "center" }}>
-      <h1>Área do Cliente</h1>
-      <p>Seja bem-vindo(a)! Só quem tem a senha consegue ver esta página.</p>
+    <div className="pagina-estreita">
+      <h1>Minha conta</h1>
+      <p className="apoio">Você está conectado. Esta área só aparece para quem fez login.</p>
+      <Link to="/favoritos" className="btn btn-secundario">Ver favoritos</Link>
     </div>
   );
 }

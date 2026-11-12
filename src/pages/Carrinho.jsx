@@ -1,73 +1,123 @@
+import { useState } from "react";
 import { useCarrinho } from "../contexts/CarrinhoContext";
 import { Link, useNavigate } from "react-router-dom";
-import { Trash2, ShoppingBag } from "lucide-react";
+import { Trash2, Minus, Plus } from "lucide-react";
+import { formatarMoeda } from "../utils/formatacao";
 
 function Carrinho() {
-  const { carrinho, removerDoCarrinho, atualizarQuantidade, limparCarrinho, valorTotal } = useCarrinho();
+  const { carrinho, removerDoCarrinho, atualizarQuantidade, limparCarrinho, valorTotal, totalItens } = useCarrinho();
   const navegar = useNavigate();
-
-  const formatarMoeda = (valor) => valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const [confirmarLimpar, setConfirmarLimpar] = useState(false);
 
   if (carrinho.length === 0) {
     return (
-      <div style={{ padding: "60px 20px", textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
-        <ShoppingBag size={64} color="var(--text-muted)" style={{ margin: "0 auto 20px", opacity: 0.5 }} />
-        <h2>Seu carrinho está vazio.</h2>
-        <p style={{ color: "var(--text-muted)", marginBottom: "30px" }}>Dê uma olhada nos nossos produtos e adicione os que mais gostar!</p>
-        <Link to="/" className="btn" style={{ padding: "12px 24px", backgroundColor: "var(--accent)", color: "white", textDecoration: "none", borderRadius: "var(--radius-sm)" }}>
-          Continuar Comprando
-        </Link>
+      <div className="pagina-404">
+        <h1>Seu carrinho está vazio</h1>
+        <p>Os produtos que você adicionar aparecem aqui.</p>
+        <Link to="/" className="btn btn-primario">Ver catálogo</Link>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "40px 20px", maxWidth: "1000px", margin: "0 auto" }}>
-      <h2 style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
-        <ShoppingBag /> Meu Carrinho
-      </h2>
+    <div>
+      <h1 className="pagina-titulo">
+        Carrinho
+        <span className="contagem-titulo">
+          {totalItens} {totalItens === 1 ? "item" : "itens"}
+        </span>
+      </h1>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        {carrinho.map((item) => (
-          <div key={item.produto.id} className="produto-card" style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "20px", padding: "15px" }}>
-            <img src={item.produto.thumbnail} alt={item.produto.title} style={{ width: "80px", height: "80px", objectFit: "contain", borderRadius: "var(--radius-sm)", backgroundColor: "var(--bg-dark)" }} />
-            
-            <div style={{ flex: 1 }}>
-              <h3 style={{ margin: "0 0 5px 0", fontSize: "1.1rem" }}>{item.produto.title}</h3>
-              <p style={{ color: "var(--success)", fontWeight: "bold", margin: 0 }}>{formatarMoeda(item.produto.price)}</p>
-            </div>
+      <div className="carrinho-grid">
+        <section aria-label="Itens do carrinho">
+          <ul className="carrinho-lista">
+            {carrinho.map((item) => {
+              if (!item?.produto?.id) return null;
+              return (
+              <li key={item.produto.id} className="carrinho-item">
+                <div className="carrinho-item__img">
+                  <img src={item.produto.thumbnail || ""} alt="" />
+                </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <button onClick={() => atualizarQuantidade(item.produto.id, item.quantidade - 1)} style={{ padding: "5px 10px", borderRadius: "5px", border: "1px solid var(--border)", background: "transparent", color: "var(--text-main)", cursor: "pointer" }}>-</button>
-              <span style={{ fontWeight: "bold", width: "20px", textAlign: "center" }}>{item.quantidade}</span>
-              <button onClick={() => atualizarQuantidade(item.produto.id, item.quantidade + 1)} style={{ padding: "5px 10px", borderRadius: "5px", border: "1px solid var(--border)", background: "transparent", color: "var(--text-main)", cursor: "pointer" }}>+</button>
-            </div>
+                <div className="carrinho-item__info">
+                  <Link to={`/produto/${item.produto.id}`}>{item.produto.title || "Produto"}</Link>
+                  <span className="unitario num">{formatarMoeda(item.produto.price)} / un.</span>
+                </div>
 
-            <p style={{ fontWeight: "bold", width: "100px", textAlign: "right" }}>
-              {formatarMoeda(item.produto.price * item.quantidade)}
-            </p>
+                <div className="stepper" role="group" aria-label={`Quantidade de ${item.produto.title}`}>
+                  <button
+                    type="button"
+                    onClick={() => atualizarQuantidade(item.produto.id, item.quantidade - 1)}
+                    disabled={item.quantidade <= 1}
+                    aria-label="Diminuir quantidade"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <output aria-live="polite">{item.quantidade}</output>
+                  <button
+                    type="button"
+                    onClick={() => atualizarQuantidade(item.produto.id, item.quantidade + 1)}
+                    aria-label="Aumentar quantidade"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
 
-            <button onClick={() => removerDoCarrinho(item.produto.id)} style={{ background: "transparent", border: "none", color: "var(--danger)", cursor: "pointer", padding: "10px" }} title="Remover Item">
-              <Trash2 size={20} />
-            </button>
+                <p className="carrinho-item__subtotal num">
+                  {formatarMoeda((Number(item.produto.price) || 0) * (Number(item.quantidade) || 1))}
+                </p>
+
+                <button
+                  type="button"
+                  className="btn-remover"
+                  onClick={() => removerDoCarrinho(item.produto.id)}
+                  aria-label={`Remover ${item.produto.title}`}
+                  title="Remover"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </li>
+            );})}
+          </ul>
+
+          <div className="carrinho-rodape-lista">
+            {confirmarLimpar ? (
+              <span className="confirmacao" role="alert">
+                Remover todos os itens?
+                <button type="button" className="btn-link perigo" onClick={limparCarrinho}>
+                  Sim, esvaziar
+                </button>
+                <button type="button" className="btn-link" onClick={() => setConfirmarLimpar(false)}>
+                  Cancelar
+                </button>
+              </span>
+            ) : (
+              <button type="button" className="btn-link perigo" onClick={() => setConfirmarLimpar(true)}>
+                Esvaziar carrinho
+              </button>
+            )}
           </div>
-        ))}
+        </section>
 
-        {/* Resumo do Pedido */}
-        <div className="produto-card" style={{ marginTop: "20px", padding: "25px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <button onClick={limparCarrinho} style={{ background: "transparent", border: "1px solid var(--danger)", color: "var(--danger)", padding: "8px 16px", borderRadius: "var(--radius-sm)", cursor: "pointer" }}>
-              Limpar Carrinho
-            </button>
+        <aside className="resumo" aria-labelledby="titulo-resumo">
+          <h2 id="titulo-resumo">Resumo</h2>
+          <div className="resumo-linha">
+            <span>Subtotal ({totalItens} {totalItens === 1 ? "item" : "itens"})</span>
+            <span className="num">{formatarMoeda(valorTotal)}</span>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ color: "var(--text-muted)", margin: "0 0 5px 0" }}>Total a pagar:</p>
-            <h2 style={{ color: "var(--success)", margin: "0 0 15px 0", fontSize: "2rem" }}>{formatarMoeda(valorTotal)}</h2>
-            <button onClick={() => navegar("/checkout")} style={{ padding: "15px 30px", fontSize: "1.1rem", fontWeight: "bold", backgroundColor: "var(--accent)", color: "white", border: "none", borderRadius: "var(--radius-sm)", cursor: "pointer" }}>
-              Prosseguir para Checkout
-            </button>
+          <div className="resumo-linha">
+            <span>Frete</span>
+            <span>calculado no pagamento</span>
           </div>
-        </div>
+          <div className="resumo-total">
+            <span>Total</span>
+            <span className="num">{formatarMoeda(valorTotal)}</span>
+          </div>
+          <button type="button" className="btn btn-primario btn-largo" onClick={() => navegar("/checkout")}>
+            Ir para pagamento
+          </button>
+          <Link to="/" className="resumo-voltar">Continuar comprando</Link>
+        </aside>
       </div>
     </div>
   );
