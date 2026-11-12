@@ -1,11 +1,17 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 
 const FavoritosContext = createContext();
 
 export function FavoritosProvider({ children }) {
   const [favoritos, setFavoritos] = useState(() => {
-    const salvos = localStorage.getItem("favoritos");
-    return salvos ? JSON.parse(salvos) : [];
+    try {
+      const salvos = localStorage.getItem("favoritos");
+      const parsed = salvos ? JSON.parse(salvos) : [];
+      return Array.isArray(parsed) ? parsed.filter((p) => p && typeof p === "object" && p.id) : [];
+    } catch {
+      return [];
+    }
   });
 
   useEffect(() => {
@@ -13,10 +19,11 @@ export function FavoritosProvider({ children }) {
   }, [favoritos]);
 
   function alternarFavorito(produto) {
+    if (!produto || !produto.id) return;
     setFavoritos((prev) => {
-      const existe = prev.find((p) => p.id === produto.id);
+      const existe = prev.find((p) => p?.id === produto.id);
       if (existe) {
-        return prev.filter((p) => p.id !== produto.id); 
+        return prev.filter((p) => p?.id !== produto.id); 
       } else {
         return [...prev, produto]; 
       }
@@ -24,7 +31,7 @@ export function FavoritosProvider({ children }) {
   }
 
   function ehFavorito(id) {
-    return favoritos.some((p) => p.id === id);
+    return favoritos.some((p) => p?.id === id);
   }
 
   return (
