@@ -4,7 +4,8 @@ function Rodape() {
   return (
     <footer className="rodape-principal">
       <div className="rodape-conteudo">
-        <p>&copy; {anoAtual} Instituto Federal do Espírito Santo - Campus de Alegre.</p>
+        <p className="marca">NexusTech</p>
+        <p>&copy; {anoAtual} Instituto Federal do Espírito Santo, Campus de Alegre.</p>
         <p>Curso Superior de Tecnologia em Análise e Desenvolvimento de Sistemas</p>
       </div>
     </footer>

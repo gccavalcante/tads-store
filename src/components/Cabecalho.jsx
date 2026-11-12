@@ -1,6 +1,6 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useCarrinho } from "../contexts/CarrinhoContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ShoppingCart, Heart, User, Sun, Moon, LogOut, Search } from "lucide-react";
 
@@ -8,7 +8,7 @@ function Cabecalho({ titulo }) {
   const { logado, sair } = useAuth();
   const { totalItens } = useCarrinho();
   const navegar = useNavigate();
-  
+
   const [isLightMode, setIsLightMode] = useState(() => localStorage.getItem("tema") === "light");
   const [termoBusca, setTermoBusca] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,7 +24,7 @@ function Cabecalho({ titulo }) {
   }, [isLightMode]);
 
   useEffect(() => {
-    const lidarComScroll = () => setIsScrolled(window.scrollY > 20);
+    const lidarComScroll = () => setIsScrolled(window.scrollY > 8);
     window.addEventListener("scroll", lidarComScroll);
     return () => window.removeEventListener("scroll", lidarComScroll);
   }, []);
@@ -33,63 +33,76 @@ function Cabecalho({ titulo }) {
     e.preventDefault();
     if (termoBusca.trim() !== "") {
       navegar(`/?q=${termoBusca}`);
-      setTermoBusca(""); 
+      setTermoBusca("");
     }
   }
 
+  const classeIcone = ({ isActive }) => `btn-icone${isActive ? " ativo" : ""}`;
+
   return (
     <header className={`cabecalho-loja ${isScrolled ? "scrolled" : ""}`}>
-      <Link to="/" className="logo-link" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <img 
-          src="/NexusTech-logo.jpg" 
-          alt="Logo NexusTech" 
-          style={{ width: "60px", height: "auto", objectFit: "contain", borderRadius: "8px" }} 
-        />
-        <h1 style={{ fontSize: "1.6rem", margin: 0 }}>{titulo}</h1>
-      </Link>
-      
-      <form onSubmit={fazerBuscaGlobal} className="search-bar-header">
-        <input 
-          type="text" 
-          placeholder="O que você está procurando?" 
-          value={termoBusca}
-          onChange={(e) => setTermoBusca(e.target.value)}
-          className="search-input"
-        />
-        <button type="submit" className="search-btn" title="Buscar">
-          <Search size={20} />
-        </button>
-      </form>
-      
-      <nav className="nav-icones">
-        <button onClick={() => setIsLightMode(!isLightMode)} className="btn-icone" title="Alternar Tema">
-          {isLightMode ? <Moon size={24} /> : <Sun size={24} />}
-        </button>
-
-        <Link to="/favoritos" className="btn-icone" title="Favoritos">
-          <Heart size={24} />
-        </Link>
-        
-        <Link to="/carrinho" className="btn-icone carrinho-icone" title="Carrinho">
-          <ShoppingCart size={24} />
-          {totalItens > 0 && <span className="badge-carrinho">{totalItens}</span>}
+      <div className="cabecalho-interno">
+        <Link to="/" className="logo-link" aria-label={`${titulo}, página inicial`}>
+          <img src="/NexusTech-logo.jpg" alt="" className="logo-img" />
+          <span className="logo-nome">{titulo}</span>
         </Link>
 
-        {logado ? (
-          <div className="usuario-menu">
-            <Link to="/minha-conta" className="btn-icone" title="Minha Conta">
-              <User size={24} />
-            </Link>
-            <button onClick={sair} className="btn-icone sair" title="Sair">
-              <LogOut size={24} />
-            </button>
-          </div>
-        ) : (
-          <Link to="/login" className="btn-icone" title="Entrar">
-            <User size={24} />
-          </Link>
-        )}
-      </nav>
+        <form onSubmit={fazerBuscaGlobal} className="search-bar-header" role="search">
+          <label htmlFor="busca-global" className="sr-only">Buscar produtos</label>
+          <input
+            id="busca-global"
+            type="search"
+            placeholder="Buscar iPhone, Galaxy, Zenbook…"
+            value={termoBusca}
+            onChange={(e) => setTermoBusca(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-btn" aria-label="Buscar">
+            <Search size={18} />
+          </button>
+        </form>
+
+        <nav className="nav-icones" aria-label="Atalhos">
+          <button
+            type="button"
+            onClick={() => setIsLightMode(!isLightMode)}
+            className="btn-icone"
+            aria-label={isLightMode ? "Usar tema escuro" : "Usar tema claro"}
+            title={isLightMode ? "Tema escuro" : "Tema claro"}
+          >
+            {isLightMode ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
+
+          <NavLink to="/favoritos" className={classeIcone} aria-label="Favoritos" title="Favoritos">
+            <Heart size={20} />
+          </NavLink>
+
+          <NavLink
+            to="/carrinho"
+            className={classeIcone}
+            aria-label={`Carrinho, ${totalItens} ${totalItens === 1 ? "item" : "itens"}`}
+            title="Carrinho"
+          >
+            <ShoppingCart size={20} />
+            {totalItens > 0 && <span className="badge-carrinho" aria-hidden="true">{totalItens}</span>}
+          </NavLink>
+
+          {logado ? (
+            <div className="usuario-menu">
+              <NavLink to="/minha-conta" className={classeIcone} aria-label="Minha conta" title="Minha conta">
+                <User size={20} />
+              </NavLink>
+              <button type="button" onClick={sair} className="btn-icone" aria-label="Sair" title="Sair">
+                <LogOut size={20} />
+              </button>
+            </div>
+          ) : (
+            <NavLink to="/login" className={classeIcone} aria-label="Entrar" title="Entrar">
+              <User size={20} />
+            </NavLink>
+          )}
+        </nav>
+      </div>
     </header>
   );
 }

@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
 import ProdutoCard from "./ProdutoCard";
-import { Search, Filter } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { Search } from "lucide-react";
+import { Link, useSearchParams } from "react-router-dom";
+import { rotuloCategoria } from "../utils/formatacao";
+
+function SkeletonGrade() {
+  return (
+    <div className="lista-produtos" aria-hidden="true">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div key={i} className="skeleton-card">
+          <div className="sk-foto" />
+          <div className="sk-linha curta" />
+          <div className="sk-linha" />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function Vitrine() {
-  // 1. Iniciamos o carregando como TRUE aqui
   const [produtos, setProdutos] = useState([]);
-  const [carregando, setCarregando] = useState(true); 
+  const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
-  
+
   const [buscaLocal, setBuscaLocal] = useState("");
   const [categoria, setCategoria] = useState("");
 
@@ -35,79 +49,118 @@ function Vitrine() {
     });
   }, []);
 
-  if (carregando) return <h2 className="loading-state" style={{ textAlign: "center", padding: "40px" }}>Carregando catálogo...</h2>;
-  if (erro) return <h2 className="error-state" style={{ textAlign: "center", color: "var(--danger)", padding: "40px" }}>{erro}</h2>;
+  if (carregando) {
+    return (
+      <div className="catalogo-container" aria-busy="true">
+        <div />
+        <section>
+          <div className="vitrine-cabecalho">
+            <h1>Catálogo</h1>
+            <span className="resultado">Carregando…</span>
+          </div>
+          <SkeletonGrade />
+        </section>
+      </div>
+    );
+  }
+
+  if (erro) {
+    return (
+      <div className="estado-vazio" role="alert">
+        <p className="estado-erro">{erro}</p>
+        <button type="button" className="btn btn-secundario" onClick={() => window.location.reload()}>
+          Tentar de novo
+        </button>
+      </div>
+    );
+  }
 
   const produtosFiltrados = produtos.filter((p) => {
-    if (!p || !p.title) return false; 
-    
+    if (!p || !p.title) return false;
+
     const bateComBuscaLocal = p.title.toLowerCase().includes(buscaLocal.toLowerCase());
     const bateComBuscaGlobal = p.title.toLowerCase().includes(queryGlobal.toLowerCase());
     const bateComCategoria = categoria === "" || p.category === categoria;
-    
+
     return bateComBuscaLocal && bateComBuscaGlobal && bateComCategoria;
   });
 
   const categoriasUnicas = [...new Set(produtos.map((p) => p.category))];
+  const contarCategoria = (cat) => produtos.filter((p) => p.category === cat).length;
+
+  const tituloVitrine = categoria ? rotuloCategoria(categoria) : "Catálogo";
 
   return (
     <div className="catalogo-container">
-      <aside className="filtros-sidebar">
-        <div className="filtro-cabecalho">
-          <Filter size={20} />
-          <h3>Filtros</h3>
+      <aside className="filtros-sidebar" aria-label="Filtros">
+        <div>
+          <span className="filtro-rotulo" id="rotulo-categorias">Categoria</span>
+          <ul className="categorias-lista" aria-labelledby="rotulo-categorias">
+            <li>
+              <button
+                type="button"
+                className={`btn-categoria ${categoria === "" ? "ativo" : ""}`}
+                aria-pressed={categoria === ""}
+                onClick={() => setCategoria("")}
+              >
+                Todas <span className="contagem">{produtos.length}</span>
+              </button>
+            </li>
+            {categoriasUnicas.map((cat) => (
+              <li key={cat}>
+                <button
+                  type="button"
+                  className={`btn-categoria ${categoria === cat ? "ativo" : ""}`}
+                  aria-pressed={categoria === cat}
+                  onClick={() => setCategoria(cat)}
+                >
+                  {rotuloCategoria(cat)} <span className="contagem">{contarCategoria(cat)}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="filtro-grupo">
-          <label>Buscar Produto</label>
+        <div>
+          <label className="filtro-rotulo" htmlFor="busca-local">Filtrar por nome</label>
           <div className="input-com-icone">
-            <Search size={18} className="icone-busca" />
+            <Search size={16} className="icone-busca" aria-hidden="true" />
             <input
+              id="busca-local"
               type="text"
-              placeholder="Ex: Laptop..."
+              className="input-base"
+              placeholder="Ex.: Galaxy"
               value={buscaLocal}
               onChange={(e) => setBuscaLocal(e.target.value)}
             />
           </div>
         </div>
-
-        <div className="filtro-grupo">
-          <label>Categorias</label>
-          <div className="categorias-lista">
-            <button 
-              className={`btn-categoria ${categoria === "" ? "ativo" : ""}`}
-              onClick={() => setCategoria("")}
-            >
-              Todas
-            </button>
-            {categoriasUnicas.map((cat) => (
-              <button 
-                key={cat} 
-                className={`btn-categoria ${categoria === cat ? "ativo" : ""}`}
-                onClick={() => setCategoria(cat)}
-              >
-                {cat.replace("-", " ")}
-              </button>
-            ))}
-          </div>
-        </div>
       </aside>
 
-      <main className="vitrine-principal">
+      <section className="vitrine-principal" aria-labelledby="titulo-vitrine">
         <div className="vitrine-cabecalho">
-          <h2>Catálogo de Produtos</h2>
-          <span>{produtosFiltrados.length} produtos encontrados</span>
+          <h1 id="titulo-vitrine">{tituloVitrine}</h1>
+          <span className="resultado" aria-live="polite">
+            {produtosFiltrados.length} {produtosFiltrados.length === 1 ? "produto" : "produtos"}
+          </span>
         </div>
 
+        {queryGlobal && (
+          <p className="busca-ativa">
+            Resultados para “{queryGlobal}”
+            <Link to="/" className="btn-link">Limpar busca</Link>
+          </p>
+        )}
+
         {produtosFiltrados.length === 0 ? (
-          <div className="empty-state" style={{ textAlign: "center", padding: "40px", backgroundColor: "var(--bg-card)", borderRadius: "var(--radius-lg)" }}>
-            <p style={{ color: "var(--text-muted)", marginBottom: "20px" }}>Nenhum produto encontrado com estes filtros.</p>
-            <button 
-              className="btn" 
-              style={{ padding: "10px 20px", backgroundColor: "var(--accent)", color: "white", border: "none", borderRadius: "var(--radius-sm)", cursor: "pointer" }} 
+          <div className="estado-vazio">
+            <p>Nenhum produto com esses filtros.</p>
+            <button
+              type="button"
+              className="btn btn-secundario"
               onClick={() => { setBuscaLocal(""); setCategoria(""); }}
             >
-              Limpar Filtros
+              Limpar filtros
             </button>
           </div>
         ) : (
@@ -117,7 +170,7 @@ function Vitrine() {
             ))}
           </div>
         )}
-      </main>
+      </section>
     </div>
   );
 }

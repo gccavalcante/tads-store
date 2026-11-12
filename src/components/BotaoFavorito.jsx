@@ -1,23 +1,21 @@
 import { useFavoritos } from "../contexts/FavoritosContext";
 import { Heart } from "lucide-react";
 
-function BotaoFavorito({ produto }) {
+function BotaoFavorito({ produto, tamanho = 20, className = "" }) {
   const { alternarFavorito, ehFavorito } = useFavoritos();
   const favorito = ehFavorito(produto.id);
+  const rotulo = favorito ? "Remover dos favoritos" : "Adicionar aos favoritos";
 
   return (
-    <button 
+    <button
+      type="button"
       onClick={() => alternarFavorito(produto)}
-      style={{ 
-        background: "transparent", 
-        border: "none", 
-        cursor: "pointer",
-        color: favorito ? "var(--danger)" : "var(--text-muted)",
-        transition: "var(--transition)"
-      }}
-      title={favorito ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+      className={`btn-favorito${favorito ? " ativo" : ""} ${className}`.trim()}
+      aria-label={rotulo}
+      aria-pressed={favorito}
+      title={rotulo}
     >
-      <Heart fill={favorito ? "var(--danger)" : "none"} size={24} />
+      <Heart fill={favorito ? "currentColor" : "none"} size={tamanho} />
     </button>
   );
 }
